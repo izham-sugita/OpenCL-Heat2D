@@ -1,0 +1,1 @@
+g++ -std=c++11 -I. opencl-Heat2D.cpp -lOpenCL -o opencl-Heat2D
