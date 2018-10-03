@@ -88,6 +88,8 @@ int main(int argc, char *argv[])
         queue.enqueueWriteBuffer(d_T, CL_TRUE, 0, bytes, h_T);
         queue.enqueueWriteBuffer(d_Tnew, CL_TRUE, 0, bytes, h_Tnew);
 
+	//Two ways to read the kernel
+	//1. Converting the content of kernel file into string/char
 	//Read program source
 	std::ifstream sourceFileName("kernelHeat2D.cl");
 	std::string sourceFile(
@@ -104,17 +106,17 @@ int main(int argc, char *argv[])
 	//create kernel object
 	cl::Kernel kernel(program_,"heat2d", &err);
 	
+
+	//2. Write the kernel in kernel files like a long char.
 	/*	
         //Build kernel from source string
         cl::Program::Sources source(1,
             std::make_pair(kernelSource,strlen(kernelSource)));
         cl::Program program_ = cl::Program(context, source);
         program_.build(devices);
- 
-        // Create kernel object
+         // Create kernel object
         cl::Kernel kernel(program_, "heat2d", &err);
- 
-	*/
+ 	*/
 
         // Bind kernel arguments to kernel
         kernel.setArg(0, d_T);
@@ -122,8 +124,6 @@ int main(int argc, char *argv[])
 	kernel.setArg(2, nx);
         kernel.setArg(3, ny);
 	kernel.setArg(4, kappa);
-
-	//std::cout<<"Argument clear!\n";
  
         // Number of work items in each local work group
 	//cl::NDRange localSize(8);
@@ -139,6 +139,7 @@ int main(int argc, char *argv[])
         // Enqueue kernel
         cl::Event event;
 
+	//My favorite time style.. from chrono.
 	high_resolution_clock::time_point t1 = high_resolution_clock::now();
 	
 	do{
